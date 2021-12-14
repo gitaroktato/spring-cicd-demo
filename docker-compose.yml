@@ -3,7 +3,10 @@ services:
   jenkins:
     image: jenkinsci/blueocean
     network_mode: 'host'
+    environment:
+      DOCKER_TLS_VERIFY: "1"
+      DOCKER_HOST: "tcp://192.168.99.100:2376"
     volumes:
       - ~/.docker/machine/machines/default:/var/jenkins_home/.docker
     ports:
-      - "18080:8080"
+      - 8080:8080
