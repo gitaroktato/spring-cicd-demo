@@ -1,0 +1,9 @@
+version: "3"
+services:
+  jenkins:
+    image: jenkinsci/blueocean
+    network_mode: 'host'
+    volumes:
+      - ~/.docker/machine/machines/default:/var/jenkins_home/.docker
+    ports:
+      - "18080:8080"
