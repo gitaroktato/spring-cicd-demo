@@ -1,12 +1,26 @@
-version: "3"
+version: "3.7"
 services:
-  jenkins:
-    image: jenkinsci/blueocean
-    network_mode: 'host'
+  docker:
+    image: docker:dind
+    privileged: true
     environment:
-      DOCKER_TLS_VERIFY: "1"
-      DOCKER_HOST: "tcp://192.168.99.100:2376"
+      DOCKER_TLS_CERTDIR: /certs
     volumes:
-      - ~/.docker/machine/machines/default:/var/jenkins_home/.docker
+      - jenkins-docker-certs:/certs/client
+      - jenkins-data:/var/jenkins_home
+  jenkins-blueocean:
+    image: jenkinsci/blueocean
+    environment:
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: 1
+      COMPOSE_OPTIONS: "--network=host -v/certs/client:/certs/client"
     ports:
       - 8080:8080
+      - 50000:50000
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - jenkins-docker-certs:/certs/client:ro
+volumes:
+  jenkins-docker-certs:
+  jenkins-data:
